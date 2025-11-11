@@ -71,4 +71,41 @@
     </style>
 </head>
 <body>
+
+    <div class="container">
+        <h1>Medical Reminder Dashboard</h1>
+
+        <form id="reminderForm">
+            <input type="text" id="medicine" placeholder="Medicine Name" required>
+            <input type="time" id="time" required>
+            <input type="date" id="date" required>
+            <button type="submit">Add Reminder</button>
+        </form>
+
+        <h3>Upcoming Reminders</h3>
+        <div id="reminderList"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('reminderForm');
+        const reminderList = document.getElementById('reminderList');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const med = document.getElementById('medicine').value;
+            const time = document.getElementById('time').value;
+            const date = document.getElementById('date').value;
+
+            const div = document.createElement('div');
+            div.classList.add('reminder');
+            div.innerHTML = `<strong>${med}</strong> 
+                             <div class="time">${date} at ${time}</div>`;
+
+            reminderList.appendChild(div);
+
+            form.reset();
+        });
+    </script>
+
+</body>
 </html>
