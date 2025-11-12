@@ -59,7 +59,7 @@
         .reminder {
             background: #f1faee;
             padding: 10px 15px;
-            border-left: 5px solid #457b9d;
+            border-left: 5px solid #80a4ba;
             border-radius: 5px;
             margin-bottom: 10px;
         }
@@ -78,7 +78,9 @@
         <form id="reminderForm">
             <input type="text" id="medicine" placeholder="Medicine Name" required>
             <input type="time" id="time" required>
-            <input type="date" id="date" required>
+            <input type="date" id="from date" required>
+            <input type="date" id="to date" required>
+            <input type="text" id="Quantity" placeholder="Quantity" required>
             <button type="submit">Add Reminder</button>
         </form>
 
@@ -94,12 +96,14 @@
             e.preventDefault();
             const med = document.getElementById('medicine').value;
             const time = document.getElementById('time').value;
-            const date = document.getElementById('date').value;
+            const from_date  = document.getElementById('from date').value;
+            const to_date = document.getElementById('to date').value;
+            const Quant_ = document.getElementById('Quantity').value;
 
             const div = document.createElement('div');
             div.classList.add('reminder');
-            div.innerHTML = `<strong>${med}</strong> 
-                             <div class="time">${date} at ${time}</div>`;
+            div.innerHTML = `<strong>${med} : ${Quant_}</strong> 
+                             <div class="time">${from_date} to ${to_date} at ${time}</div>`;
 
             reminderList.appendChild(div);
 
