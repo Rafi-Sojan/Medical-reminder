@@ -1,124 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Reminder Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical Reminder Dashboard</title>
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-image: url('AdobeStock_281967200.jpeg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('AdobeStock_281967200.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+    }
 
-        .container {
-            background-color: rgba(198, 150, 150, 0.8);
-            width: 60%;
-            margin: 80px auto;
-            padding: 20px 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
+    .container {
+      background-color: rgba(198, 150, 150, 0.8);
+      width: 60%;
+      margin: 80px auto;
+      padding: 20px 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
 
-        h1 {
-            text-align: center;
-            color: #e63946;
-            margin-bottom: 20px;
-        }
+    h1 {
+      text-align: center;
+      color: #e63946;
+      margin-bottom: 20px;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
 
-        input, select, button {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
+    input,
+    select,
+    button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
 
-        button {
-            background-color: #457b9d;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    button {
+      background-color: #457b9d;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-        button:hover {
-            background-color: #1d3557;
-        }
+    button:hover {
+      background-color: #1d3557;
+    }
 
-        .reminder {
-            background: #f1faee;
-            padding: 10px 15px;
-            border-left: 5px solid #80a4ba;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
+    .reminder {
+      background: #f1faee;
+      padding: 10px 15px;
+      border-left: 5px solid #80a4ba;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
 
-        .time {
-            color: #555;
-            font-size: 0.9em;
-        }
-    </style>
+    .time {
+      color: #555;
+      font-size: 0.9em;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="container">
+    <h1>Medical Reminder Dashboard</h1>
 
-    <div class="container">
-        <h1>Medical Reminder Dashboard</h1>
+    <form id="reminderForm">
+      <input type="text" id="medicine" placeholder="Medicine Name" required />
+      <input type="date" id="fromDate" required />
+      <input type="date" id="toDate" required />
+      <input type="number" id="quantity" placeholder="Times per day" min="1" required />
+      
+      <div id="timeFields"></div>
 
-        <form id="reminderForm">
-            <input type="text" id="medicine" placeholder="Medicine Name" required>
-            <input type="date" id="from date" required>
-            <input type="date" id="to date" required>
-            <input type="time" id="time1" required placeholder="Time stamp 1">
-            <input type="time" id="time2" required placeholder="Time stamp 2">
-            <input type="time" id="time3" required placeholder="Time stamp 3">
-            <input type="text" id="Quantity" placeholder="Quantity" required>
-            <button type="submit">Add Reminder</button>
-        </form>
+      <button type="submit">Add Reminder</button>
+    </form>
 
-        <h3>Upcoming Reminders</h3>
-        <div id="reminderList"></div>
-    </div>
+    <h3>Upcoming Reminders</h3>
+    <div id="reminderList"></div>
+  </div>
 
-    <script>
-        let timearray = [];
-        timearray.push('${}')
-        const form = document.getElementById('reminderForm');
-        const reminderList = document.getElementById('reminderList');
+  <script>
+    const form = document.getElementById('reminderForm');
+    const reminderList = document.getElementById('reminderList');
+    const quantityInput = document.getElementById('quantity');
+    const timeFieldsContainer = document.getElementById('timeFields');
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const med = document.getElementById('medicine').value;
-            const time_1 = document.getElementById('time1').value;
-            const time_2 = document.getElementById('time2').value;
-            const time_3 = document.getElementById('time3').value;
-            const from_date  = document.getElementById('from date').value;
-            const to_date = document.getElementById('to date').value;
-            const Quant_ = document.getElementById('Quantity').value;
+    quantityInput.addEventListener('input', () => {
+      timeFieldsContainer.innerHTML = ''; 
+      const quantity = parseInt(quantityInput.value);
 
-            const div = document.createElement('div');
-            div.classList.add('reminder');
-            div.innerHTML = `<strong>${med} : ${Quant_}</strong> 
-                             <div class="time">${from_date} to ${to_date}</div>
-                             <div class="time">at ${time_1}</div> 
-                             <div class="time">at ${time_2} 
-                             <div class="time">at ${time_3}`;
+      if (!isNaN(quantity) && quantity > 0) {
+        for (let i = 1; i <= quantity; i++) {
+          const timeInput = document.createElement('input');
+          timeInput.type = 'time';
+          timeInput.id = `time${i}`;
+          timeInput.required = true;
+          timeInput.placeholder = `Time ${i}`;
+          timeFieldsContainer.appendChild(timeInput);
+        }
+      }
+    });
 
-            reminderList.appendChild(div);
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-            form.reset();
-        });
-    </script>
+      const med = document.getElementById('medicine').value;
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      const quantity = parseInt(quantityInput.value);
 
+      const times = [];
+      for (let i = 1; i <= quantity; i++) {
+        const t = document.getElementById(`time${i}`).value;
+        if (t) times.push(t);
+      }
+
+      const div = document.createElement('div');
+      div.classList.add('reminder');
+      div.innerHTML = `
+        <strong>${med}</strong><br>
+        <div class="time">From ${fromDate} to ${toDate}</div>
+        <div class="time">Times per day: ${times.join(', ')}</div>
+      `;
+
+      reminderList.appendChild(div);
+
+      form.reset();
+      timeFieldsContainer.innerHTML = '';
+    });
+  </script>
 </body>
 </html>
