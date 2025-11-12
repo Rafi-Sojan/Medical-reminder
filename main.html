@@ -79,7 +79,9 @@
             <input type="text" id="medicine" placeholder="Medicine Name" required>
             <input type="date" id="from date" required>
             <input type="date" id="to date" required>
-            <input type="time" id="time" required>
+            <input type="time" id="time1" required placeholder="Time stamp 1">
+            <input type="time" id="time2" required placeholder="Time stamp 2">
+            <input type="time" id="time3" required placeholder="Time stamp 3">
             <input type="text" id="Quantity" placeholder="Quantity" required>
             <button type="submit">Add Reminder</button>
         </form>
@@ -89,13 +91,17 @@
     </div>
 
     <script>
+        let timearray = [];
+        timearray.push('${}')
         const form = document.getElementById('reminderForm');
         const reminderList = document.getElementById('reminderList');
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const med = document.getElementById('medicine').value;
-            const time = document.getElementById('time').value;
+            const time_1 = document.getElementById('time1').value;
+            const time_2 = document.getElementById('time2').value;
+            const time_3 = document.getElementById('time3').value;
             const from_date  = document.getElementById('from date').value;
             const to_date = document.getElementById('to date').value;
             const Quant_ = document.getElementById('Quantity').value;
@@ -103,7 +109,11 @@
             const div = document.createElement('div');
             div.classList.add('reminder');
             div.innerHTML = `<strong>${med} : ${Quant_}</strong> 
-                             <div class="time">${from_date} to ${to_date} at ${time}</div>`;
+                             <div class="time">${from_date} to ${to_date}</div>
+                             <div class="time">at ${time_1}</div> 
+                             <div class="time">at ${time_2} 
+                             <div class="time">at ${time_3}`;
+
 
             reminderList.appendChild(div);
 
