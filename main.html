@@ -1,145 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Medical Reminder Dashboard</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Reminder App</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-image: url('AdobeStock_281967200.jpeg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      background: linear-gradient(120deg,#89f7fe,#66a6ff);
+      min-height: 100vh;
       margin: 0;
       padding: 0;
-    }
-
-    .container {
-      background-color: rgba(198, 150, 150, 0.8);
-      width: 60%;
-      margin: 80px auto;
-      padding: 20px 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    h1 {
-      text-align: center;
-      color: #e63946;
-      margin-bottom: 20px;
-    }
-
-    form {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 30px;
+      align-items: center;
     }
-
-    input,
-    select,
-    button {
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      width: 420px;
+      margin-top: 60px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.3);
+    }
+    h2 {
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 10px;
+    }
+    h4 {
+      color: #1d3557;
+      text-align: center;
+      margin: 0 0 20px;
+    }
+    label {
+      font-weight: 500;
+      color: #333;
+      margin-top: 10px;
+      display: block;
+    }
+    input, button {
+      width: 100%;
       padding: 10px;
-      font-size: 16px;
+      margin-top: 8px;
+      font-size: 15px;
       border-radius: 8px;
       border: 1px solid #ccc;
     }
-
     button {
-      background-color: #457b9d;
+      background: #457b9d;
       color: white;
       cursor: pointer;
-      transition: 0.3s;
     }
-
     button:hover {
-      background-color: #1d3557;
+      background: #1d3557;
     }
-
+    #timeFields input {
+      margin-top: 5px;
+    }
+    .logout {
+      margin-top: 15px;
+      background: #e63946;
+    }
+    .logout:hover {
+      background: #b71c1c;
+    }
     .reminder {
       background: #f1faee;
-      padding: 10px 15px;
+      padding: 10px;
       border-left: 5px solid #80a4ba;
-      border-radius: 5px;
-      margin-bottom: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
     }
-
     .time {
       color: #555;
       font-size: 0.9em;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-    <h1>Medical Reminder Dashboard</h1>
+    <h2>Medical Reminder App</h2>
+    <h4 id="welcomeText"></h4>
 
-    <form id="reminderForm">
-      <input type="text" id="medicine" placeholder="Medicine Name" required />
-      <input type="date" id="fromDate" required />
-      <input type="date" id="toDate" required />
-      <input type="number" id="quantity" placeholder="Times per day" min="1" required />
-      
-      <div id="timeFields"></div>
+    <label>Medicine Name:</label>
+    <input type="text" id="medicine" placeholder="Enter medicine name">
 
-      <button type="submit">Add Reminder</button>
-    </form>
+    <label>From Date:</label>
+    <input type="date" id="fromDate">
 
-    <h3>Upcoming Reminders</h3>
+    <label>To Date:</label>
+    <input type="date" id="toDate">
+
+    <label>Quantity (number of doses per day):</label>
+    <input type="number" id="quantity" placeholder="Enter quantity" min="1">
+
+    <button type="button" id="generateBtn">Generate Time Fields</button>
+
+    <div id="timeFields"></div>
+
+    <button type="button" id="saveBtn">Save Reminder</button>
+    <button class="logout" id="logoutBtn">Logout</button>
+
+    <h3 style="margin-top:25px;color:#1d3557;">Your Reminders</h3>
     <div id="reminderList"></div>
   </div>
 
   <script>
-    const form = document.getElementById('reminderForm');
-    const reminderList = document.getElementById('reminderList');
-    const quantityInput = document.getElementById('quantity');
-    const timeFieldsContainer = document.getElementById('timeFields');
+    
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (!loggedInUser) {
+      window.location.href = "login.html";
+    }
 
-    quantityInput.addEventListener('input', () => {
-      timeFieldsContainer.innerHTML = ''; 
-      const quantity = parseInt(quantityInput.value);
+    document.getElementById("welcomeText").textContent = `Welcome, ${loggedInUser} 👋`;
 
-      if (!isNaN(quantity) && quantity > 0) {
-        for (let i = 1; i <= quantity; i++) {
-          const timeInput = document.createElement('input');
-          timeInput.type = 'time';
-          timeInput.id = `time${i}`;
-          timeInput.required = true;
-          timeInput.placeholder = `Time ${i}`;
-          timeFieldsContainer.appendChild(timeInput);
-        }
+    const generateBtn = document.getElementById("generateBtn");
+    const timeFields = document.getElementById("timeFields");
+    const reminderList = document.getElementById("reminderList");
+
+    
+    generateBtn.addEventListener("click", () => {
+      const qty = parseInt(document.getElementById("quantity").value);
+      timeFields.innerHTML = "";
+      if (isNaN(qty) || qty <= 0) {
+        alert("Enter a valid quantity");
+        return;
+      }
+      for (let i = 1; i <= qty; i++) {
+        const input = document.createElement("input");
+        input.type = "time";
+        input.placeholder = `Time ${i}`;
+        input.id = `time${i}`;
+        timeFields.appendChild(input);
       }
     });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+    
+    function displayReminders() {
+      reminderList.innerHTML = "";
+      const userData = JSON.parse(localStorage.getItem(loggedInUser));
+      if (!userData || !userData.reminders) return;
 
-      const med = document.getElementById('medicine').value;
-      const fromDate = document.getElementById('fromDate').value;
-      const toDate = document.getElementById('toDate').value;
-      const quantity = parseInt(quantityInput.value);
+      userData.reminders.forEach((r) => {
+        const div = document.createElement("div");
+        div.classList.add("reminder");
+        div.innerHTML = `
+          <strong>${r.medicine}</strong><br>
+          <div class="time">From: ${r.fromDate} → To: ${r.toDate}</div>
+          <div class="time">Times: ${r.times.join(", ")}</div>
+        `;
+        reminderList.appendChild(div);
+      });
+    }
+
+    
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const med = document.getElementById("medicine").value.trim();
+      const fromDate = document.getElementById("fromDate").value;
+      const toDate = document.getElementById("toDate").value;
+      const qty = parseInt(document.getElementById("quantity").value);
+
+      if (!med || !fromDate || !toDate || isNaN(qty) || qty <= 0) {
+        alert("Please enter all required details");
+        return;
+      }
 
       const times = [];
-      for (let i = 1; i <= quantity; i++) {
-        const t = document.getElementById(`time${i}`).value;
+      for (let i = 1; i <= qty; i++) {
+        const t = document.getElementById(`time${i}`)?.value;
         if (t) times.push(t);
       }
 
-      const div = document.createElement('div');
-      div.classList.add('reminder');
-      div.innerHTML = `
-        <strong>${med}</strong><br>
-        <div class="time">From ${fromDate} to ${toDate}</div>
-        <div class="time">Times per day: ${times.join(', ')}</div>
-      `;
+      if (times.length !== qty) {
+        alert("Please fill all time fields");
+        return;
+      }
 
-      reminderList.appendChild(div);
+      
+      let userData = JSON.parse(localStorage.getItem(loggedInUser)) || { password: "", reminders: [] };
+      if (!userData.reminders) userData.reminders = [];
 
-      form.reset();
-      timeFieldsContainer.innerHTML = '';
+      userData.reminders.push({
+        medicine: med,
+        fromDate,
+        toDate,
+        times
+      });
+
+  
+      localStorage.setItem(loggedInUser, JSON.stringify(userData));
+
+      alert("💊 Reminder saved successfully!");
+      displayReminders();
+
+    
+      document.getElementById("medicine").value = "";
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      document.getElementById("quantity").value = "";
+      timeFields.innerHTML = "";
+    });
+
+    
+    displayReminders();
+
+  
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
     });
   </script>
 </body>
