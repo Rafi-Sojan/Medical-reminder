@@ -35,9 +35,9 @@
       const user=JSON.parse(s);
       if(user.password===p){
         localStorage.setItem("loggedInUser",u);
-        alert("✅ Login successful!");
-        window.location.href="dashboard.html";
-      }else alert("❌ Incorrect password");
+        alert("Login successful!");
+        window.location.href="main.html";
+      }else alert("Incorrect password");
     });
   </script>
 </body>
