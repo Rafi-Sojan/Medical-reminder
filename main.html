@@ -76,14 +76,6 @@
       color: #555;
       font-size: 0.9em;
     }
-    .reminder button {
-      margin-top: 5px;
-      padding: 5px 8px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
   </style>
 </head>
 <body>
@@ -144,53 +136,19 @@
 
     function displayReminders() {
       reminderList.innerHTML = "";
-      let userData = JSON.parse(localStorage.getItem(loggedInUser));
+      const userData = JSON.parse(localStorage.getItem(loggedInUser));
       if (!userData || !userData.reminders) return;
 
-      userData.reminders.forEach((r, index) => {
+      userData.reminders.forEach((r) => {
         const div = document.createElement("div");
         div.classList.add("reminder");
         div.innerHTML = `
           <strong>${r.medicine}</strong><br>
           <div class="time">From: ${r.fromDate} → To: ${r.toDate}</div>
           <div class="time">Times: ${r.times.join(", ")}</div>
-          <button onclick="editReminder(${index})" style="background:#f4a261;color:white;">Edit</button>
-          <button onclick="deleteReminder(${index})" style="background:#e63946;color:white;">Delete</button>
         `;
         reminderList.appendChild(div);
       });
-    }
-
-    function deleteReminder(index) {
-      if (confirm("Are you sure you want to delete this reminder?")) {
-        let userData = JSON.parse(localStorage.getItem(loggedInUser));
-        userData.reminders.splice(index, 1);
-        localStorage.setItem(loggedInUser, JSON.stringify(userData));
-        displayReminders();
-      }
-    }
-
-    function editReminder(index) {
-      let userData = JSON.parse(localStorage.getItem(loggedInUser));
-      const r = userData.reminders[index];
-
-      document.getElementById("medicine").value = r.medicine;
-      document.getElementById("fromDate").value = r.fromDate;
-      document.getElementById("toDate").value = r.toDate;
-      document.getElementById("quantity").value = r.times.length;
-
-      timeFields.innerHTML = "";
-      r.times.forEach((time, i) => {
-        const input = document.createElement("input");
-        input.type = "time";
-        input.value = time;
-        input.id = `time${i + 1}`;
-        timeFields.appendChild(input);
-      });
-
-      userData.reminders.splice(index, 1);
-      localStorage.setItem(loggedInUser, JSON.stringify(userData));
-      displayReminders();
     }
 
     document.getElementById("saveBtn").addEventListener("click", () => {
@@ -230,6 +188,7 @@
       alert("💊 Reminder saved successfully!");
       displayReminders();
 
+      // Clear form
       document.getElementById("medicine").value = "";
       document.getElementById("fromDate").value = "";
       document.getElementById("toDate").value = "";
